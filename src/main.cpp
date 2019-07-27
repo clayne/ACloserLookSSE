@@ -53,6 +53,11 @@ namespace
 
 	void LoadCallback(SKSE::SerializationInterface* a_intfc)
 	{
+		auto inputEventHandler = Events::InputEventHandler::GetSingleton();
+		inputEventHandler->Clear();
+		auto lookHandler = LookHandler::GetSingleton();
+		lookHandler->Clear();
+
 		UInt32 type;
 		UInt32 version;
 		UInt32 length;
@@ -64,21 +69,15 @@ namespace
 
 			switch (type) {
 			case kInputEventHandler:
-				{
-					auto inputEventHandler = Events::InputEventHandler::GetSingleton();
+				if (!inputEventHandler->Load(a_intfc)) {
 					inputEventHandler->Clear();
-					if (!inputEventHandler->Load(a_intfc)) {
-						_ERROR("Failed to load InputEventHandler!\n");
-					}
+					_ERROR("Failed to load InputEventHandler!\n");
 				}
 				break;
 			case kLookHandler:
-				{
-					auto lookHandler = LookHandler::GetSingleton();
+				if (!lookHandler->Load(a_intfc)) {
 					lookHandler->Clear();
-					if (!lookHandler->Load(a_intfc)) {
-						_ERROR("Failed to load LookHandler regs!\n");
-					}
+					_ERROR("Failed to load LookHandler regs!\n");
 				}
 				break;
 			default:
@@ -109,8 +108,6 @@ extern "C" {
 		SKSE::Logger::SetPrintLevel(SKSE::Logger::Level::kDebugMessage);
 		SKSE::Logger::SetFlushLevel(SKSE::Logger::Level::kDebugMessage);
 		SKSE::Logger::UseLogStamp(true);
-		SKSE::Logger::HookPapyrusLog(true);
-		SKSE::Logger::SetPapyrusLogFilter("ACloserLook");
 
 		_MESSAGE("ACloserLookSSE v%s", ACLK_VERSION_VERSTRING);
 
@@ -154,7 +151,6 @@ extern "C" {
 
 		InstallHooks();
 		RegisterPapyrusFunctions();
-
 
 		auto serialization = SKSE::GetSerializationInterface();
 		serialization->SetUniqueID(kACloserLook);

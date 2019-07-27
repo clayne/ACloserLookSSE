@@ -19,7 +19,7 @@ namespace
 	}
 
 
-	void FirstPersonStateEx::Hook_OnUpdate(BSTSmartPointer<TESCameraState>& a_newState)
+	void FirstPersonStateEx::Hook_OnUpdate(RE::BSTSmartPointer<RE::TESCameraState>& a_newState)
 	{
 		auto lookHandler = LookHandler::GetSingleton();
 		if (camera && lookHandler->NeedsUpdate()) {
@@ -43,7 +43,7 @@ namespace
 	}
 
 
-	void ThirdPersonStateEx::Hook_OnUpdate(BSTSmartPointer<TESCameraState>& a_newState)
+	void ThirdPersonStateEx::Hook_OnUpdate(RE::BSTSmartPointer<RE::TESCameraState>& a_newState)
 	{
 		auto lookHandler = LookHandler::GetSingleton();
 		if (camera && lookHandler->NeedsUpdate()) {

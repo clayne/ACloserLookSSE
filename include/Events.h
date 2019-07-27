@@ -25,8 +25,8 @@ namespace Events
 		void SetKey(UInt32 a_key);
 
 	private:
-		using Lock = std::mutex;
-		using Locker = std::unique_lock<Lock>;
+		using Lock = std::recursive_mutex;
+		using Locker = std::lock_guard<Lock>;
 
 
 		enum : UInt32 { kInvalid = static_cast<UInt32>(-1) };

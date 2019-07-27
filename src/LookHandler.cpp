@@ -49,6 +49,9 @@ void LookHandler::Clear()
 	Locker locker(_lock);
 	_step = DF_STEP;
 	_targetFOVDiff = DF_TARGET_FOV_DIFF;
+	_setTargetFOV = false;
+	_adjusted = false;
+	_needsUpdate = false;
 }
 
 

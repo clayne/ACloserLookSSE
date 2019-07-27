@@ -10,10 +10,10 @@ namespace
 	public:
 		static void InstallHooks();
 
-		void Hook_OnUpdate(BSTSmartPointer<TESCameraState>& a_newState);	// 03
+		void Hook_OnUpdate(RE::BSTSmartPointer<RE::TESCameraState>& a_newState);	// 03
 
 	private:
-		using OnUpdate_t = function_type_t<decltype(&FirstPersonStateEx::Hook_OnUpdate)>;
+		using OnUpdate_t = function_type_t<decltype(&FirstPersonState::OnUpdate)>;
 		inline static OnUpdate_t* _OnUpdate = 0;
 	};
 
@@ -23,10 +23,10 @@ namespace
 	public:
 		static void InstallHooks();
 
-		void Hook_OnUpdate(BSTSmartPointer<TESCameraState>& a_newState);	// 03
+		void Hook_OnUpdate(RE::BSTSmartPointer<RE::TESCameraState>& a_newState);	// 03
 
 	private:
-		using OnUpdate_t = function_type_t<decltype(&ThirdPersonStateEx::Hook_OnUpdate)>;
+		using OnUpdate_t = function_type_t<decltype(&ThirdPersonState::OnUpdate)>;
 		inline static OnUpdate_t* _OnUpdate = 0;
 	};
 }

@@ -25,8 +25,8 @@ public:
 	void SetStep(float a_step);
 
 private:
-	using Lock = std::mutex;
-	using Locker = std::unique_lock<Lock>;
+	using Lock = std::recursive_mutex;
+	using Locker = std::lock_guard<Lock>;
 
 
 	LookHandler();
