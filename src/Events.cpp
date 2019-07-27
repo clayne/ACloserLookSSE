@@ -22,32 +22,47 @@ namespace Events
 			return EventResult::kContinue;
 		}
 
-		if (!a_event || !*a_event) {
-			return EventResult::kContinue;
-		}
-		auto event = *a_event;
-
-		if (event->eventType != EventType::kButton) {
+		if (!a_event) {
 			return EventResult::kContinue;
 		}
 
-		auto button = static_cast<RE::ButtonEvent*>(event);
-		if (!button->IsDown() || button->deviceType != DeviceType::kKeyboard) {
-			return EventResult::kContinue;
-		}
+		for (auto event = *a_event; event; event = event->next) {
+			if (event->eventType != EventType::kButton) {
+				continue;
+			}
 
-		auto mm = RE::MenuManager::GetSingleton();
-		auto inputMM = RE::InputMappingManager::GetSingleton();
-		if (mm->GameIsPaused() || !inputMM->IsMovementControlsEnabled()) {
-			return EventResult::kContinue;
-		}
+			auto button = static_cast<RE::ButtonEvent*>(event);
+			if (!button->IsDown()) {
+				continue;
+			}
 
-		if (button->keyMask == _key) {
-			auto lookHandler = LookHandler::GetSingleton();
-			if (lookHandler->IsAdjusted()) {
-				lookHandler->RestoreFOV();
-			} else {
-				lookHandler->AdjustFOV();
+			auto key = button->keyMask;
+			switch (button->deviceType) {
+			case DeviceType::kMouse:
+				key += kMouseOffset;
+				break;
+			case DeviceType::kKeyboard:
+				key += kKeyboardOffset;
+				break;
+			case DeviceType::kGamepad:
+			default:
+				continue;
+			}
+
+			auto mm = RE::MenuManager::GetSingleton();
+			auto inputMM = RE::InputMappingManager::GetSingleton();
+			if (mm->GameIsPaused() || !inputMM->IsMovementControlsEnabled()) {
+				continue;
+			}
+
+			if (key == _key) {
+				auto lookHandler = LookHandler::GetSingleton();
+				if (lookHandler->IsAdjusted()) {
+					lookHandler->RestoreFOV();
+				} else {
+					lookHandler->AdjustFOV();
+				}
+				break;
 			}
 		}
 

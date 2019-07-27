@@ -29,7 +29,12 @@ namespace Events
 		using Locker = std::lock_guard<Lock>;
 
 
-		enum : UInt32 { kInvalid = static_cast<UInt32>(-1) };
+		enum : UInt32
+		{
+			kInvalid = static_cast<UInt32>(-1),
+			kKeyboardOffset = 0,
+			kMouseOffset = 256
+		};
 
 
 		InputEventHandler();
