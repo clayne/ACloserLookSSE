@@ -1,10 +1,12 @@
 #include "LookHandler.h"
 
+#include <memory>
+
 
 LookHandler* LookHandler::GetSingleton()
 {
 	static LookHandler singleton;
-	return &singleton;
+	return std::addressof(singleton);
 }
 
 
@@ -16,11 +18,11 @@ bool LookHandler::Save(const SKSE::SerializationInterface* a_intfc, UInt32 a_typ
 		return false;
 	}
 
-	if (!a_intfc->WriteRecordData(&_step, sizeof(_step))) {
+	if (!a_intfc->WriteRecordData(_step)) {
 		return false;
 	}
 
-	if (!a_intfc->WriteRecordData(&_targetFOVDiff, sizeof(_targetFOVDiff))) {
+	if (!a_intfc->WriteRecordData(_targetFOVDiff)) {
 		return false;
 	}
 
@@ -32,11 +34,11 @@ bool LookHandler::Load(const SKSE::SerializationInterface* a_intfc)
 {
 	Locker locker(_lock);
 
-	if (!a_intfc->ReadRecordData(&_step, sizeof(_step))) {
+	if (!a_intfc->ReadRecordData(_step)) {
 		return false;
 	}
 
-	if (!a_intfc->ReadRecordData(&_targetFOVDiff, sizeof(_targetFOVDiff))) {
+	if (!a_intfc->ReadRecordData(_targetFOVDiff)) {
 		return false;
 	}
 

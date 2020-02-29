@@ -1,5 +1,7 @@
 #include "Events.h"
 
+#include <memory>
+
 #include "LookHandler.h"
 
 
@@ -8,15 +10,15 @@ namespace Events
 	InputEventHandler* InputEventHandler::GetSingleton()
 	{
 		static InputEventHandler singleton;
-		return &singleton;
+		return std::addressof(singleton);
 	}
 
 
-	auto InputEventHandler::ReceiveEvent(RE::InputEvent** a_event, RE::BSTEventSource<RE::InputEvent*>* a_eventSource)
+	auto InputEventHandler::ProcessEvent(RE::InputEvent* const* a_event, [[maybe_unused]] RE::BSTEventSource<RE::InputEvent*>* a_eventSource)
 		-> EventResult
 	{
-		using EventType = RE::InputEvent::EventType;
-		using DeviceType = RE::DeviceType;
+		using EventType = RE::INPUT_EVENT_TYPE;
+		using DeviceType = RE::INPUT_DEVICE;
 
 		if (_key == kInvalid) {
 			return EventResult::kContinue;
@@ -36,8 +38,8 @@ namespace Events
 				continue;
 			}
 
-			auto key = button->keyMask;
-			switch (button->deviceType) {
+			auto key = button->idCode;
+			switch (button->device) {
 			case DeviceType::kMouse:
 				key += kMouseOffset;
 				break;
@@ -49,9 +51,9 @@ namespace Events
 				continue;
 			}
 
-			auto mm = RE::MenuManager::GetSingleton();
-			auto inputMM = RE::InputMappingManager::GetSingleton();
-			if (mm->GameIsPaused() || !inputMM->IsMovementControlsEnabled()) {
+			auto ui = RE::UI::GetSingleton();
+			auto controlMap = RE::ControlMap::GetSingleton();
+			if (ui->GameIsPaused() || !controlMap->IsMovementControlsEnabled()) {
 				continue;
 			}
 
@@ -78,7 +80,7 @@ namespace Events
 			return false;
 		}
 
-		if (!a_intfc->WriteRecordData(&_key, sizeof(_key))) {
+		if (!a_intfc->WriteRecordData(_key)) {
 			return false;
 		}
 
@@ -90,7 +92,7 @@ namespace Events
 	{
 		Locker locker(_lock);
 
-		if (!a_intfc->ReadRecordData(&_key, sizeof(_key))) {
+		if (!a_intfc->ReadRecordData(_key)) {
 			return false;
 		}
 
@@ -127,8 +129,8 @@ namespace Events
 
 	void SinkEventHandlers()
 	{
-		auto inputManager = RE::InputManager::GetSingleton();
-		inputManager->AddEventSink(InputEventHandler::GetSingleton());
+		auto deviceManager = RE::BSInputDeviceManager::GetSingleton();
+		deviceManager->AddEventSink(InputEventHandler::GetSingleton());
 		_MESSAGE("Added input event sink");
 	}
 }

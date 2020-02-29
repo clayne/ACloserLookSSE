@@ -11,12 +11,12 @@ namespace Events
 	class InputEventHandler : public RE::BSTEventSink<RE::InputEvent*>
 	{
 	public:
-		using EventResult = RE::EventResult;
+		using EventResult = RE::BSEventNotifyControl;
 
 
 		static InputEventHandler* GetSingleton();
 
-		virtual	EventResult	ReceiveEvent(RE::InputEvent** a_event, RE::BSTEventSource<RE::InputEvent*>* a_eventSource) override;
+		virtual	EventResult	ProcessEvent(RE::InputEvent* const* a_event, RE::BSTEventSource<RE::InputEvent*>* a_eventSource) override;
 
 		bool Save(const SKSE::SerializationInterface* a_intfc, UInt32 a_typeCode, UInt32 a_version);
 		bool Load(const SKSE::SerializationInterface* a_intfc);

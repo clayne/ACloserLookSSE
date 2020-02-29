@@ -1,6 +1,4 @@
-﻿#include "skse64_common/skse_version.h"
-
-#include "Events.h"
+﻿#include "Events.h"
 #include "Hooks.h"
 #include "LookHandler.h"
 #include "Papyrus.h"
@@ -116,16 +114,13 @@ extern "C" {
 		a_info->version = ACLK_VERSION_MAJOR;
 
 		if (a_skse->IsEditor()) {
-			_FATALERROR("Loaded in editor, marking as incompatible!\n");
+			_FATALERROR("Loaded in editor, marking as incompatible!");
 			return false;
 		}
 
-		switch (a_skse->RuntimeVersion()) {
-		case RUNTIME_VERSION_1_5_73:
-		case RUNTIME_VERSION_1_5_80:
-			break;
-		default:
-			_FATALERROR("Unsupported runtime version %08X!\n", a_skse->RuntimeVersion());
+		auto ver = a_skse->RuntimeVersion();
+		if (ver <= SKSE::RUNTIME_1_5_39) {
+			_FATALERROR("Unsupported runtime version %s!", ver.GetString().c_str());
 			return false;
 		}
 
@@ -142,15 +137,12 @@ extern "C" {
 		}
 
 		auto messaging = SKSE::GetMessagingInterface();
-		if (messaging->RegisterListener("SKSE", MessageHandler)) {
-			_MESSAGE("Messaging interface registration successful");
-		} else {
-			_FATALERROR("Messaging interface registration failed!\n");
+		if (!messaging->RegisterListener("SKSE", MessageHandler)) {
 			return false;
 		}
 
-		InstallHooks();
-		RegisterPapyrusFunctions();
+		Hooks::Install();
+		Papyrus::Register();
 
 		auto serialization = SKSE::GetSerializationInterface();
 		serialization->SetUniqueID(kACloserLook);

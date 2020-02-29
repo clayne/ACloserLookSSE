@@ -7,9 +7,6 @@
     <ClCompile Include="src\LookHandler.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hooks.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\Papyrus.cpp">
       <Filter>src</Filter>
     </ClCompile>

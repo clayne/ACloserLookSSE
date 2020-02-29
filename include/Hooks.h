@@ -1,35 +1,56 @@
 #pragma once
 
 #include "RE/Skyrim.h"
+#include "REL/Relocation.h"
+
+#include "LookHandler.h"
 
 
-namespace
+namespace Hooks
 {
-	class FirstPersonStateEx : public RE::FirstPersonState
+	template <std::uint64_t CAMID>
+	class TESCameraStateEx
 	{
 	public:
-		static void InstallHooks();
+		using Self = TESCameraStateEx<CAMID>;
 
-		void Hook_OnUpdate(RE::BSTSmartPointer<RE::TESCameraState>& a_newState);	// 03
+
+		static void InstallHooks()
+		{
+			REL::Offset<std::uintptr_t> vTable = REL::ID(CAMID);
+			_Update = vTable.WriteVFunc(0x3, &Self::Hook_Update);
+
+			_MESSAGE("Installed hook for %s", typeid(Self).name());
+		}
+
+		static void Hook_Update(RE::TESCameraState* a_this, RE::BSTSmartPointer<RE::TESCameraState>& a_newState)	// 03
+		{
+			auto lookHandler = LookHandler::GetSingleton();
+			if (a_this->camera && lookHandler->NeedsUpdate()) {
+				auto playerCamera = static_cast<RE::PlayerCamera*>(a_this->camera);
+				lookHandler->Update(playerCamera);
+			}
+
+			_Update(a_this, a_newState);
+		}
 
 	private:
-		using OnUpdate_t = function_type_t<decltype(&FirstPersonState::OnUpdate)>;
-		inline static OnUpdate_t* _OnUpdate = 0;
+		using OnUpdate_t = decltype(&RE::TESCameraState::Update);
+		static inline REL::Function<OnUpdate_t> _Update;
 	};
 
 
-	class ThirdPersonStateEx : public RE::ThirdPersonState
+	using FirstPersonStateEx = TESCameraStateEx<267810>;
+	using HorseCameraStateEx = TESCameraStateEx<267749>;
+	using ThirdPersonStateEx = TESCameraStateEx<256647>;
+
+
+	inline void Install()
 	{
-	public:
-		static void InstallHooks();
+		FirstPersonStateEx::InstallHooks();
+		HorseCameraStateEx::InstallHooks();
+		ThirdPersonStateEx::InstallHooks();
 
-		void Hook_OnUpdate(RE::BSTSmartPointer<RE::TESCameraState>& a_newState);	// 03
-
-	private:
-		using OnUpdate_t = function_type_t<decltype(&ThirdPersonState::OnUpdate)>;
-		inline static OnUpdate_t* _OnUpdate = 0;
-	};
+		_MESSAGE("Installed hooks");
+	}
 }
-
-
-void InstallHooks();
