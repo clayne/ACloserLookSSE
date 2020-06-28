@@ -1,8 +1,5 @@
 #pragma once
 
-#include "RE/Skyrim.h"
-
-
 namespace Papyrus
 {
 	class ACloserLook
@@ -15,9 +12,8 @@ namespace Papyrus
 		static UInt32 GetKey(RE::StaticFunctionTag*);
 		static void SetKey(RE::StaticFunctionTag*, UInt32 a_key);
 
-		static bool Register(RE::BSScript::Internal::VirtualMachine* a_vm);
+		static bool Register(RE::BSScript::IVirtualMachine* a_vm);
 	};
-
 
 	void Register();
 }

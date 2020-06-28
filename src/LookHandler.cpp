@@ -1,14 +1,10 @@
 #include "LookHandler.h"
 
-#include <memory>
-
-
 LookHandler* LookHandler::GetSingleton()
 {
 	static LookHandler singleton;
 	return std::addressof(singleton);
 }
-
 
 bool LookHandler::Save(const SKSE::SerializationInterface* a_intfc, UInt32 a_typeCode, UInt32 a_version)
 {
@@ -29,7 +25,6 @@ bool LookHandler::Save(const SKSE::SerializationInterface* a_intfc, UInt32 a_typ
 	return true;
 }
 
-
 bool LookHandler::Load(const SKSE::SerializationInterface* a_intfc)
 {
 	Locker locker(_lock);
@@ -45,7 +40,6 @@ bool LookHandler::Load(const SKSE::SerializationInterface* a_intfc)
 	return true;
 }
 
-
 void LookHandler::Clear()
 {
 	Locker locker(_lock);
@@ -56,13 +50,11 @@ void LookHandler::Clear()
 	_needsUpdate = false;
 }
 
-
 bool LookHandler::LookHandler::NeedsUpdate() const
 {
 	Locker locker(_lock);
 	return _needsUpdate;
 }
-
 
 void LookHandler::Update(RE::PlayerCamera* a_camera)
 {
@@ -86,13 +78,11 @@ void LookHandler::Update(RE::PlayerCamera* a_camera)
 	_needsUpdate = fov != _targetFOV;
 }
 
-
 bool LookHandler::IsAdjusted() const
 {
 	Locker locker(_lock);
 	return _adjusted;
 }
-
 
 void LookHandler::AdjustFOV()
 {
@@ -104,7 +94,6 @@ void LookHandler::AdjustFOV()
 	}
 }
 
-
 void LookHandler::RestoreFOV()
 {
 	Locker locker(_lock);
@@ -113,13 +102,11 @@ void LookHandler::RestoreFOV()
 	_adjusted = false;
 }
 
-
 float LookHandler::GetFOVDiff() const
 {
 	Locker locker(_lock);
 	return _targetFOVDiff;
 }
-
 
 void LookHandler::SetFOVDiff(float a_diff)
 {
@@ -127,20 +114,17 @@ void LookHandler::SetFOVDiff(float a_diff)
 	_targetFOVDiff = a_diff;
 }
 
-
 float LookHandler::GetStep() const
 {
 	Locker locker(_lock);
 	return _step;
 }
 
-
 void LookHandler::SetStep(float a_step)
 {
 	Locker locker(_lock);
 	_step = a_step;
 }
-
 
 LookHandler::LookHandler() :
 	_lock(),

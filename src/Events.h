@@ -1,11 +1,5 @@
 #pragma once
 
-#include <mutex>
-
-#include "RE/Skyrim.h"
-#include "SKSE/API.h"
-
-
 namespace Events
 {
 	class InputEventHandler : public RE::BSTEventSink<RE::InputEvent*>
@@ -13,10 +7,9 @@ namespace Events
 	public:
 		using EventResult = RE::BSEventNotifyControl;
 
-
 		static InputEventHandler* GetSingleton();
 
-		virtual	EventResult	ProcessEvent(RE::InputEvent* const* a_event, RE::BSTEventSource<RE::InputEvent*>* a_eventSource) override;
+		virtual EventResult ProcessEvent(RE::InputEvent* const* a_event, RE::BSTEventSource<RE::InputEvent*>* a_eventSource) override;
 
 		bool Save(const SKSE::SerializationInterface* a_intfc, UInt32 a_typeCode, UInt32 a_version);
 		bool Load(const SKSE::SerializationInterface* a_intfc);
@@ -28,14 +21,12 @@ namespace Events
 		using Lock = std::recursive_mutex;
 		using Locker = std::lock_guard<Lock>;
 
-
 		enum : UInt32
 		{
 			kInvalid = static_cast<UInt32>(-1),
 			kKeyboardOffset = 0,
 			kMouseOffset = 256
 		};
-
 
 		InputEventHandler();
 		InputEventHandler(const InputEventHandler&) = delete;
@@ -45,11 +36,9 @@ namespace Events
 		InputEventHandler& operator=(const InputEventHandler&) = delete;
 		InputEventHandler& operator=(InputEventHandler&&) = delete;
 
-
 		mutable Lock _lock;
 		UInt32 _key;
 	};
-
 
 	void SinkEventHandlers();
 }

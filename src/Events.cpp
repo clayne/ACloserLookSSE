@@ -1,9 +1,6 @@
 #include "Events.h"
 
-#include <memory>
-
 #include "LookHandler.h"
-
 
 namespace Events
 {
@@ -12,7 +9,6 @@ namespace Events
 		static InputEventHandler singleton;
 		return std::addressof(singleton);
 	}
-
 
 	auto InputEventHandler::ProcessEvent(RE::InputEvent* const* a_event, [[maybe_unused]] RE::BSTEventSource<RE::InputEvent*>* a_eventSource)
 		-> EventResult
@@ -71,7 +67,6 @@ namespace Events
 		return EventResult::kContinue;
 	}
 
-
 	bool InputEventHandler::Save(const SKSE::SerializationInterface* a_intfc, UInt32 a_typeCode, UInt32 a_version)
 	{
 		Locker locker(_lock);
@@ -87,7 +82,6 @@ namespace Events
 		return true;
 	}
 
-
 	bool InputEventHandler::Load(const SKSE::SerializationInterface* a_intfc)
 	{
 		Locker locker(_lock);
@@ -99,13 +93,11 @@ namespace Events
 		return true;
 	}
 
-
 	void InputEventHandler::Clear()
 	{
 		Locker locker(_lock);
 		_key = kInvalid;
 	}
-
 
 	UInt32 InputEventHandler::GetKey() const
 	{
@@ -113,19 +105,16 @@ namespace Events
 		return _key;
 	}
 
-
 	void InputEventHandler::SetKey(UInt32 a_key)
 	{
 		Locker locker(_lock);
 		_key = a_key;
 	}
 
-
 	InputEventHandler::InputEventHandler() :
 		_lock(),
 		_key(kInvalid)
 	{}
-
 
 	void SinkEventHandlers()
 	{

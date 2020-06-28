@@ -1,11 +1,5 @@
 #pragma once
 
-#include <mutex>
-
-#include "RE/Skyrim.h"
-#include "SKSE/API.h"
-
-
 class LookHandler
 {
 public:
@@ -28,7 +22,6 @@ private:
 	using Lock = std::recursive_mutex;
 	using Locker = std::lock_guard<Lock>;
 
-
 	LookHandler();
 	LookHandler(const LookHandler&) = delete;
 	LookHandler(LookHandler&&) = delete;
@@ -36,7 +29,6 @@ private:
 
 	LookHandler& operator=(const LookHandler&) = delete;
 	LookHandler& operator=(LookHandler&&) = delete;
-
 
 	static constexpr float DF_TARGET_FOV_DIFF = -30.0;
 	static constexpr float DF_STEP = 1.0;
