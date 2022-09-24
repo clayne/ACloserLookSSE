@@ -6,7 +6,7 @@ LookHandler* LookHandler::GetSingleton()
 	return std::addressof(singleton);
 }
 
-bool LookHandler::Save(const SKSE::SerializationInterface* a_intfc, UInt32 a_typeCode, UInt32 a_version)
+bool LookHandler::Save(const SKSE::SerializationInterface* a_intfc, std::uint32_t a_typeCode, std::uint32_t a_version)
 {
 	Locker locker(_lock);
 

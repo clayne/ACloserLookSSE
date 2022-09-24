@@ -4,7 +4,7 @@
 #include "Papyrus.h"
 #include "version.h"
 
-enum : UInt32
+enum : std::uint32_t
 {
 	kSerializationVersion = 1,
 
@@ -48,9 +48,9 @@ void LoadCallback(SKSE::SerializationInterface* a_intfc)
 	auto lookHandler = LookHandler::GetSingleton();
 	lookHandler->Clear();
 
-	UInt32 type;
-	UInt32 version;
-	UInt32 length;
+	std::uint32_t type;
+	std::uint32_t version;
+	std::uint32_t length;
 	while (a_intfc->GetNextRecordInfo(type, version, length)) {
 		if (version != kSerializationVersion) {
 			_ERROR("Loaded data is out of date! Read (%u), expected (%u) for type code (%s)", version, kSerializationVersion, DecodeTypeCode(type).c_str());

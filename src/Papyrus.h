@@ -9,8 +9,8 @@ namespace Papyrus
 		static void SetFOVDiff(RE::StaticFunctionTag*, float a_diff);
 		static float GetStep(RE::StaticFunctionTag*);
 		static void SetStep(RE::StaticFunctionTag*, float a_step);
-		static UInt32 GetKey(RE::StaticFunctionTag*);
-		static void SetKey(RE::StaticFunctionTag*, UInt32 a_key);
+		static std::uint32_t GetKey(RE::StaticFunctionTag*);
+		static void SetKey(RE::StaticFunctionTag*, std::uint32_t a_key);
 
 		static bool Register(RE::BSScript::IVirtualMachine* a_vm);
 	};

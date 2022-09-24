@@ -11,19 +11,19 @@ namespace Events
 
 		virtual EventResult ProcessEvent(RE::InputEvent* const* a_event, RE::BSTEventSource<RE::InputEvent*>* a_eventSource) override;
 
-		bool Save(const SKSE::SerializationInterface* a_intfc, UInt32 a_typeCode, UInt32 a_version);
+		bool Save(const SKSE::SerializationInterface* a_intfc, std::uint32_t a_typeCode, std::uint32_t a_version);
 		bool Load(const SKSE::SerializationInterface* a_intfc);
 		void Clear();
-		UInt32 GetKey() const;
-		void SetKey(UInt32 a_key);
+		std::uint32_t GetKey() const;
+		void SetKey(std::uint32_t a_key);
 
 	private:
 		using Lock = std::recursive_mutex;
 		using Locker = std::lock_guard<Lock>;
 
-		enum : UInt32
+		enum : std::uint32_t
 		{
-			kInvalid = static_cast<UInt32>(-1),
+			kInvalid = static_cast<std::uint32_t>(-1),
 			kKeyboardOffset = 0,
 			kMouseOffset = 256
 		};
@@ -37,7 +37,7 @@ namespace Events
 		InputEventHandler& operator=(InputEventHandler&&) = delete;
 
 		mutable Lock _lock;
-		UInt32 _key;
+		std::uint32_t _key;
 	};
 
 	void SinkEventHandlers();

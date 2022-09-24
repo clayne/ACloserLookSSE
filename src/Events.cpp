@@ -67,7 +67,7 @@ namespace Events
 		return EventResult::kContinue;
 	}
 
-	bool InputEventHandler::Save(const SKSE::SerializationInterface* a_intfc, UInt32 a_typeCode, UInt32 a_version)
+	bool InputEventHandler::Save(const SKSE::SerializationInterface* a_intfc, std::uint32_t a_typeCode, std::uint32_t a_version)
 	{
 		Locker locker(_lock);
 
@@ -99,13 +99,13 @@ namespace Events
 		_key = kInvalid;
 	}
 
-	UInt32 InputEventHandler::GetKey() const
+	std::uint32_t InputEventHandler::GetKey() const
 	{
 		Locker locker(_lock);
 		return _key;
 	}
 
-	void InputEventHandler::SetKey(UInt32 a_key)
+	void InputEventHandler::SetKey(std::uint32_t a_key)
 	{
 		Locker locker(_lock);
 		_key = a_key;

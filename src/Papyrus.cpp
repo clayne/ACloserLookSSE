@@ -29,13 +29,13 @@ namespace Papyrus
 		lookHandler->SetStep(a_step);
 	}
 
-	UInt32 ACloserLook::GetKey(RE::StaticFunctionTag*)
+	std::uint32_t ACloserLook::GetKey(RE::StaticFunctionTag*)
 	{
 		auto inputHandler = Events::InputEventHandler::GetSingleton();
 		return inputHandler->GetKey();
 	}
 
-	void ACloserLook::SetKey(RE::StaticFunctionTag*, UInt32 a_key)
+	void ACloserLook::SetKey(RE::StaticFunctionTag*, std::uint32_t a_key)
 	{
 		auto inputHandler = Events::InputEventHandler::GetSingleton();
 		inputHandler->SetKey(a_key);

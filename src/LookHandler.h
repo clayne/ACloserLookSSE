@@ -5,7 +5,7 @@ class LookHandler
 public:
 	static LookHandler* GetSingleton();
 
-	bool Save(const SKSE::SerializationInterface* a_intfc, UInt32 a_typeCode, UInt32 a_version);
+	bool Save(const SKSE::SerializationInterface* a_intfc, std::uint32_t a_typeCode, std::uint32_t a_version);
 	bool Load(const SKSE::SerializationInterface* a_intfc);
 	void Clear();
 	bool NeedsUpdate() const;
