@@ -35,7 +35,7 @@ namespace Events
 			}
 
 			auto key = button->idCode;
-			switch (button->device) {
+			switch (button->device.get()) {
 			case DeviceType::kMouse:
 				key += kMouseOffset;
 				break;
