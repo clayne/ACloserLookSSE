@@ -118,40 +118,12 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 	}
 }
 
-extern "C" DLLEXPORT bool APIENTRY SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
+SKSEPluginLoad(const SKSE::LoadInterface* a_skse)
 {
-	SKSE::Logger::OpenRelative(FOLDERID_Documents, L"\\My Games\\Skyrim Special Edition\\SKSE\\ACloserLookSSE.log");
-	SKSE::Logger::SetPrintLevel(SKSE::Logger::Level::kDebugMessage);
-	SKSE::Logger::SetFlushLevel(SKSE::Logger::Level::kDebugMessage);
-	SKSE::Logger::UseLogStamp(true);
+	InitializeLogging();
+	SKSE::log::info("ACloserLookSSE loaded");
 
-	_MESSAGE("ACloserLookSSE v%s", ACLK_VERSION_VERSTRING);
-
-	a_info->infoVersion = SKSE::PluginInfo::kVersion;
-	a_info->name = "ACloserLookSSE";
-	a_info->version = ACLK_VERSION_MAJOR;
-
-	if (a_skse->IsEditor()) {
-		_FATALERROR("Loaded in editor, marking as incompatible!");
-		return false;
-	}
-
-	auto ver = a_skse->RuntimeVersion();
-	if (ver < SKSE::RUNTIME_1_5_39) {
-		_FATALERROR("Unsupported runtime version %s!", ver.GetString().c_str());
-		return false;
-	}
-
-	return true;
-}
-
-extern "C" DLLEXPORT bool APIENTRY SKSEPlugin_Load(const SKSE::LoadInterface* a_skse)
-{
-	_MESSAGE("ACloserLookSSE loaded");
-
-	if (!SKSE::Init(a_skse)) {
-		return false;
-	}
+	SKSE::Init(a_skse);
 
 	auto messaging = SKSE::GetMessagingInterface();
 	if (!messaging->RegisterListener("SKSE", MessageHandler)) {
