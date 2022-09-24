@@ -4,15 +4,37 @@
 
 namespace Hooks
 {
-	template <std::uint64_t CAMID>
-	class TESCameraStateEx
+	class FirstPersonStateEx
 	{
 	public:
-		using Self = TESCameraStateEx<CAMID>;
-
 		static void InstallHooks()
 		{
-			REL::Offset<std::uintptr_t> vTable = REL::ID(CAMID);
+			REL::Relocation<std::uintptr_t> vTable{ RE::VTABLE_FirstPersonState[0] };
+			_Update = vTable.write_vfunc(0x3, Hook_Update);
+
+			SKSE::log::info("Installed hook for FirstPersonStateEx");
+		}
+
+		static void Hook_Update(RE::TESCameraState* a_this, RE::BSTSmartPointer<RE::TESCameraState>& a_newState)  // 03
+		{
+			auto lookHandler = LookHandler::GetSingleton();
+			if (a_this->camera && lookHandler->NeedsUpdate()) {
+				auto playerCamera = static_cast<RE::PlayerCamera*>(a_this->camera);
+				lookHandler->Update(playerCamera);
+			}
+
+			_Update(a_this, a_newState);
+		}
+
+	private:
+		static inline REL::Relocation<decltype(&RE::TESCameraState::Update)> _Update;
+	};
+	class HorseCameraStateEx
+	{
+	public:
+		static void InstallHooks()
+		{
+			REL::Relocation<std::uintptr_t> vTable{ RE::VTABLE_HorseCameraState[0] };
 			_Update = vTable.write_vfunc(0x3, Hook_Update);
 
 			_MESSAGE("Installed hook for %s", typeid(Self).name());
@@ -30,12 +52,34 @@ namespace Hooks
 		}
 
 	private:
-		static inline REL::Offset<decltype(&RE::TESCameraState::Update)> _Update;
+		static inline REL::Relocation<decltype(&RE::TESCameraState::Update)> _Update;
 	};
 
-	using FirstPersonStateEx = TESCameraStateEx<267810>;
-	using HorseCameraStateEx = TESCameraStateEx<267749>;
-	using ThirdPersonStateEx = TESCameraStateEx<256647>;
+		class ThirdPersonStateEx
+	{
+	public:
+		static void InstallHooks()
+		{
+			REL::Relocation<std::uintptr_t> vTable{ RE::VTABLE_ThirdPersonState[0] };
+			_Update = vTable.write_vfunc(0x3, Hook_Update);
+
+			SKSE::log::info("Installed hook for ThirdPersonStateEx");
+		}
+
+		static void Hook_Update(RE::TESCameraState* a_this, RE::BSTSmartPointer<RE::TESCameraState>& a_newState)  // 03
+		{
+			auto lookHandler = LookHandler::GetSingleton();
+			if (a_this->camera && lookHandler->NeedsUpdate()) {
+				auto playerCamera = static_cast<RE::PlayerCamera*>(a_this->camera);
+				lookHandler->Update(playerCamera);
+			}
+
+			_Update(a_this, a_newState);
+		}
+
+	private:
+		static inline REL::Relocation<decltype(&RE::TESCameraState::Update)> _Update;
+	};
 
 	inline void Install()
 	{
