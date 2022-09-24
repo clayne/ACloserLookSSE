@@ -37,7 +37,7 @@ namespace Hooks
 			REL::Relocation<std::uintptr_t> vTable{ RE::VTABLE_HorseCameraState[0] };
 			_Update = vTable.write_vfunc(0x3, Hook_Update);
 
-			_MESSAGE("Installed hook for %s", typeid(Self).name());
+			SKSE::log::info("Installed hook for HorseCameraStateEx");
 		}
 
 		static void Hook_Update(RE::TESCameraState* a_this, RE::BSTSmartPointer<RE::TESCameraState>& a_newState)  // 03
@@ -87,6 +87,6 @@ namespace Hooks
 		HorseCameraStateEx::InstallHooks();
 		ThirdPersonStateEx::InstallHooks();
 
-		_MESSAGE("Installed hooks");
+		SKSE::log::info("Installed hooks");
 	}
 }

@@ -13,9 +13,39 @@ enum : std::uint32_t
 	kInputEventHandler = 'INPT',
 };
 
-std::string DecodeTypeCode(UInt32 a_typeCode)
+  void InitializeLogging()
 {
-	constexpr std::size_t SIZE = sizeof(UInt32);
+	auto path = SKSE::log::log_directory();
+	if (!path) {
+		SKSE::stl::report_and_fail("Unable to lookup SKSE logs directory.");
+	}
+	*path /= SKSE::PluginDeclaration::GetSingleton()->GetName();
+	*path += L".log";
+
+	std::shared_ptr<spdlog::logger> log;
+	if (IsDebuggerPresent()) {
+		log = std::make_shared<spdlog::logger>(
+			"Global", std::make_shared<spdlog::sinks::msvc_sink_mt>());
+	} else {
+		log = std::make_shared<spdlog::logger>(
+			"Global", std::make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true));
+	}
+#ifdef NDEBUG
+	log->set_level(spdlog::level::level_enum::info);
+#else
+	log->set_level(spdlog::level::level_enum::debug);
+#endif
+
+	log->flush_on(spdlog::level::level_enum::trace);
+
+	spdlog::set_default_logger(std::move(log));
+	spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%n] [%l] [%t] [%s:%#] %v");
+}
+
+
+std::string DecodeTypeCode(std::uint32_t a_typeCode)
+{
+	constexpr std::size_t SIZE = sizeof(std::uint32_t);
 
 	std::string sig;
 	sig.resize(SIZE);
@@ -30,15 +60,15 @@ void SaveCallback(SKSE::SerializationInterface* a_intfc)
 {
 	auto inputEventHandler = Events::InputEventHandler::GetSingleton();
 	if (!inputEventHandler->Save(a_intfc, kInputEventHandler, kSerializationVersion)) {
-		_ERROR("Failed to save InputEventHandler!\n");
+		SKSE::log::error("Failed to save InputEventHandler!\n");
 	}
 
 	auto lookHandler = LookHandler::GetSingleton();
 	if (!lookHandler->Save(a_intfc, kLookHandler, kSerializationVersion)) {
-		_ERROR("Failed to save LookHandler regs!\n");
+		SKSE::log::error("Failed to save LookHandler regs!\n");
 	}
 
-	_MESSAGE("Finished saving data");
+	SKSE::log::info("Finished saving data");
 }
 
 void LoadCallback(SKSE::SerializationInterface* a_intfc)
@@ -53,7 +83,7 @@ void LoadCallback(SKSE::SerializationInterface* a_intfc)
 	std::uint32_t length;
 	while (a_intfc->GetNextRecordInfo(type, version, length)) {
 		if (version != kSerializationVersion) {
-			_ERROR("Loaded data is out of date! Read (%u), expected (%u) for type code (%s)", version, kSerializationVersion, DecodeTypeCode(type).c_str());
+			SKSE::log::error("Loaded data is out of date! Read (%u), expected (%u) for type code (%s)", version, kSerializationVersion, DecodeTypeCode(type).c_str());
 			continue;
 		}
 
@@ -61,22 +91,22 @@ void LoadCallback(SKSE::SerializationInterface* a_intfc)
 		case kInputEventHandler:
 			if (!inputEventHandler->Load(a_intfc)) {
 				inputEventHandler->Clear();
-				_ERROR("Failed to load InputEventHandler!\n");
+				SKSE::log::error("Failed to load InputEventHandler!\n");
 			}
 			break;
 		case kLookHandler:
 			if (!lookHandler->Load(a_intfc)) {
 				lookHandler->Clear();
-				_ERROR("Failed to load LookHandler regs!\n");
+				SKSE::log::error("Failed to load LookHandler regs!\n");
 			}
 			break;
 		default:
-			_ERROR("Unrecognized record type (%s)!", DecodeTypeCode(type).c_str());
+			SKSE::log::error("Unrecognized record type (%s)!", DecodeTypeCode(type).c_str());
 			break;
 		}
 	}
 
-	_MESSAGE("Finished loading data");
+	SKSE::log::info("Finished loading data");
 }
 
 void MessageHandler(SKSE::MessagingInterface::Message* a_msg)

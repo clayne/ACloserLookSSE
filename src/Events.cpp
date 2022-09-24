@@ -120,6 +120,6 @@ namespace Events
 	{
 		auto deviceManager = RE::BSInputDeviceManager::GetSingleton();
 		deviceManager->AddEventSink(InputEventHandler::GetSingleton());
-		_MESSAGE("Added input event sink");
+		SKSE::log::info("Added input event sink");
 	}
 }

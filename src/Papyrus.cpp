@@ -49,7 +49,7 @@ namespace Papyrus
 		a_vm->RegisterFunction("SetStep", "ACloserLook", SetStep);
 		a_vm->RegisterFunction("GetKey", "ACloserLook", GetKey);
 		a_vm->RegisterFunction("SetKey", "ACloserLook", SetKey);
-		_MESSAGE("Registered ACloserLook class");
+		SKSE::log::info("Registered ACloserLook class");
 		return true;
 	}
 
@@ -57,6 +57,6 @@ namespace Papyrus
 	{
 		auto papyrus = SKSE::GetPapyrusInterface();
 		papyrus->Register(ACloserLook::Register);
-		_MESSAGE("Registered papyrus functions");
+		SKSE::log::info("Registered papyrus functions");
 	}
 }
